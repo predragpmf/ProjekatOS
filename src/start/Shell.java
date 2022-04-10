@@ -12,7 +12,7 @@ public class Shell {
     public static void start() {
         FajlSistem fs = new FajlSistem();
         do {
-            System.out.print("$ ");
+            System.out.print(fs.getPutanja() + "> ");
             naredba = scan.nextLine();
             if (naredba.isEmpty()) {
                 continue;
@@ -29,7 +29,6 @@ public class Shell {
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
                 String nazivFajla = matcher.group(0);
-                //System.out.println(nazivFajla);
                 fs.getLokacija().noviFajl(nazivFajla);
                 continue;
             }
@@ -44,12 +43,14 @@ public class Shell {
                 String nazivFajla = matcher.group(0);
                 boolean pronadjen = false;
                 if (nazivFajla.equals("..") && fs.getLokacija().getRoditelj() != null){
+                    fs.setPutanja(fs.getLokacija().getNaziv(), -1);
                     fs.setLokacija(fs.getLokacija().getRoditelj());
                     pronadjen = true;
                 } else {
                     for (Fajl f : fs.getLokacija().getDjeca()) {
                         if (f.getNaziv().equals(nazivFajla)) {
                             fs.setLokacija(f);
+                            fs.setPutanja(f.getNaziv(), 1);
                             pronadjen = true;
                         }
                     }
