@@ -7,10 +7,13 @@ import java.util.regex.Pattern;
 public class Shell {
 
     private static final Scanner scan = new Scanner(System.in);
+    //Novi fs:
+    public static FajlSistem fs;
+    // Unesena naredba:
     private static String naredba;
 
     public static void start() {
-        FajlSistem fs = new FajlSistem();
+        //Petlja za provjeru unosa:
         do {
             System.out.print(fs.getPutanja() + "> ");
             naredba = scan.nextLine();
@@ -24,49 +27,53 @@ public class Shell {
                 System.out.println("Projekat iz Operativnih sistema/ORS3.");
                 continue;
             }
-            if(naredba.matches("^mkdir\s.*$")) {
+            // Novi folder: mkdir <naziv_foldera>
+            if (naredba.matches("^mkdir\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^mkdir\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
-                String nazivFajla = matcher.group(0);
-                fs.getLokacija().noviFajl(nazivFajla);
+                String nazivFoldera = matcher.group(0);
+                fs.getLokacija().noviFajl(nazivFoldera, true);
                 continue;
             }
+            // Ispisi sve fajlove u trenutnom folderu: ls
             if (naredba.equals("ls")) {
                 fs.getLokacija().ispisiDjecu();
                 continue;
             }
-            if(naredba.matches("^cd\s.*$")) {
+            // Otvori folder: cd <naziv_foldera>
+            if (naredba.matches("^cd\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^cd\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
-                String nazivFajla = matcher.group(0);
+                String nazivFoldera = matcher.group(0);
                 boolean pronadjen = false;
-                if (nazivFajla.equals("..") && fs.getLokacija().getRoditelj() != null){
+                if (nazivFoldera.equals("..") && fs.getLokacija().getRoditelj() != null) {
                     fs.setPutanja(fs.getLokacija().getNaziv(), -1);
                     fs.setLokacija(fs.getLokacija().getRoditelj());
                     pronadjen = true;
                 } else {
                     for (Fajl f : fs.getLokacija().getDjeca()) {
-                        if (f.getNaziv().equals(nazivFajla)) {
+                        if (f.getNaziv().equals(nazivFoldera) && f.getFolder()) {
                             fs.setLokacija(f);
                             fs.setPutanja(f.getNaziv(), 1);
                             pronadjen = true;
                         }
                     }
                 }
-                if(!pronadjen) {
-                    System.out.println("Direktorijum ne postoji!");
+                if (!pronadjen) {
+                    System.out.println("Folder ne postoji!");
                 }
                 continue;
             }
-            if(naredba.matches("^rename\s.*$")){
+            // Promjeni naziv fajla/foldera: rename <stari_naziv> <novi_naziv>
+            if (naredba.matches("^rename\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^rename\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
-                String nazivFajla = matcher.group(0);
-                String stariNaziv = nazivFajla.split(" ")[0];
-                String noviNaziv = nazivFajla.split(" ")[1];
+                String naziv = matcher.group(0);
+                String stariNaziv = naziv.split(" ")[0];
+                String noviNaziv = naziv.split(" ")[1];
                 boolean pronadjen = false;
                 for (Fajl f : fs.getLokacija().getDjeca()) {
                     if (f.getNaziv().equals(stariNaziv)) {
@@ -74,18 +81,25 @@ public class Shell {
                         pronadjen = true;
                     }
                 }
-                if(!pronadjen){
+                if (!pronadjen) {
                     System.out.println("Naziv ne postoji!");
                 }
                 continue;
             }
-            if(naredba.matches("^rmdir\s.*$")){
-                Pattern pattern = Pattern.compile("(?<=^rmdir\s).*$");
+            // Obrisi folder/fajl rm <naziv_foldera>
+            if (naredba.matches("^rm\s.*$")) {
+                Pattern pattern = Pattern.compile("(?<=^rm\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
-                String nazivFajla = matcher.group(0);
-                fs.getLokacija().getDjeca().removeIf(f -> f.getNaziv().equals(nazivFajla));
-                FajlSistem.sviFajlovi.removeIf(f -> f.getNaziv().equals(nazivFajla));
+                String naziv = matcher.group(0);
+                for(Fajl fajl : fs.getLokacija().getDjeca()){
+                    if(fajl.getNaziv().equals(naziv)){
+                        fajl.setRoditelj(null);
+                    }
+                }
+                fs.getLokacija().getDjeca().removeIf(f -> f.getNaziv().equals(naziv));
+                FajlSistem.sviFajlovi.removeIf(f -> f.getNaziv().equals(naziv));
+                FajlSistem.brojFajlova--;
                 continue;
             }
             System.out.println("Naredba ne postoji!");
