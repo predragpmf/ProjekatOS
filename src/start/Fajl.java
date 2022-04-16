@@ -59,7 +59,11 @@ public class Fajl implements Serializable {
 
     public void ispisiDjecu() {
         for (Fajl f : getDjeca()) {
-            System.out.println(f.getNaziv());
+            if (f.getFolder()){
+                System.out.println("/" + f.getNaziv());
+            } else {
+                System.out.println(f.getNaziv());
+            }
         }
     }
 

@@ -15,20 +15,9 @@ public class Shell {
 
     public static void start() throws IOException {
 
-        String velicinaMem;
-        String brojOkviraMem;
+        ulaz();
 
-        System.out.println("Projekat iz ORS3");
-        System.out.print("Unesite velicinu memorije (podrazumjevano = 16000kB): ");
-        velicinaMem = scan.nextLine().strip();
-        System.out.print("Unesite broj okvira (podrazumjevano = 32): ");
-        brojOkviraMem = scan.nextLine().strip();
-        if (velicinaMem != "" && velicinaMem != "") {
-            RasporedjivacProcesa.mem.setVelicinaMemorijeB(Integer.parseInt(velicinaMem));
-            RasporedjivacProcesa.mem.setBrojOkvira(Integer.parseInt(brojOkviraMem));
-            RasporedjivacProcesa.mem.setVelicinaOkviraB(Integer.parseInt(velicinaMem) / Integer.parseInt(brojOkviraMem));
-        }
-        System.out.println("Dobrodosli!");
+        fs.getLokacija().noviFajl("out", true, 0);
 
         //Petlja za provjeru unosa:
         do {
@@ -42,6 +31,21 @@ public class Shell {
             }
             if (naredba.equals("about")) {
                 System.out.println("Projekat iz Operativnih sistema/ORS3.");
+                continue;
+            }
+            if (naredba.equals("help")){
+                StringBuilder helpSb = new StringBuilder();
+                helpSb.append("Naredbe:\n");
+                helpSb.append("mkdir <naziv_foldera> -- Novi folder;\n");
+                helpSb.append("mkfile <naziv_fajla> <velicina_fajla> -- Novi fajl;\n");
+                helpSb.append("ls -- Ispis fajlova i foldera;\n");
+                helpSb.append("cd <naziv_foldera> -- Promjeni trenutnu lokaciju;\n");
+                helpSb.append("rename <naziv_fajla/foldera> -- Promjeni naziv;\n");
+                helpSb.append("rm <naziv_fajla/foldera> -- Obrisi fajl/folder;\n");
+                helpSb.append("run <naziv_fajla> -- Pokreni fajl;\n");
+                helpSb.append("mem -- Prikazi pokrenute procese i upotrebu memorije;\n");
+                helpSb.append("save -- Sacuvaj fajlsistem na disk;\n");
+                System.out.println(helpSb);
                 continue;
             }
             // Novi folder: mkdir <naziv_foldera>
@@ -59,8 +63,13 @@ public class Shell {
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
                 String naziv = matcher.group(0);
-                String nazivFajla = naziv.split(" ")[0];
-                int velicinaFajla = Integer.parseInt(naziv.split(" ")[1]);
+                String[] nazivIVelicina = naziv.split(" ");
+                if (nazivIVelicina.length == 1){
+                    System.out.println("Greska u unosu!");
+                    continue;
+                }
+                String nazivFajla = nazivIVelicina[0];
+                int velicinaFajla = Integer.parseInt(nazivIVelicina[1]);
                 fs.getLokacija().noviFajl(nazivFajla, false, velicinaFajla);
                 continue;
             }
@@ -72,14 +81,16 @@ public class Shell {
                 String nazivFajla = matcher.group(0);
                 for (Fajl f : fs.getLokacija().getDjeca()) {
                     if (f.getNaziv().equals(nazivFajla)) {
-                        fs.rp.noviProces(f);
+                        //fs.rp.noviProces(f);
+                        FajlSistem.rp.noviProces(f);
                     }
                 }
                 continue;
             }
             // Ispisi memoriju : mem
             if (naredba.matches("^mem$")) {
-                fs.rp.mem.ispisiMemoriju();
+                RasporedjivacProcesa.mem.ispisiMemoriju();
+                //fs.rp.mem.ispisiMemoriju();
                 System.out.println();
                 continue;
             }
@@ -93,6 +104,9 @@ public class Shell {
 
             // Ispisi sve fajlove u trenutnom folderu: ls
             if (naredba.equals("ls")) {
+                if (fs.getLokacija().getNaziv().equals("out")){
+                    fs.as.ispis();
+                }
                 fs.getLokacija().ispisiDjecu();
                 continue;
             }
@@ -162,6 +176,28 @@ public class Shell {
 
         System.out.println("Zatvaranje...");
 
+    }
+
+    private static void ulaz() {
+        String velicinaMem;
+        String brojOkviraMem;
+        StringBuilder naslovSb = new StringBuilder();
+        naslovSb.append("-------------------\n");
+        naslovSb.append("|---Projekat OS---|\n");
+        naslovSb.append("-------------------\n");
+        System.out.println(naslovSb);
+        System.out.print("Unesite velicinu memorije (podrazumjevano = 16000kB): ");
+        velicinaMem = scan.nextLine().strip();
+        System.out.print("Unesite broj okvira (podrazumjevano = 32): ");
+        brojOkviraMem = scan.nextLine().strip();
+        if (!velicinaMem.equals("") && !brojOkviraMem.equals("")) {
+            RasporedjivacProcesa.mem.setVelicinaMemorijeB(Integer.parseInt(velicinaMem));
+            RasporedjivacProcesa.mem.setBrojOkvira(Integer.parseInt(brojOkviraMem));
+            RasporedjivacProcesa.mem.setVelicinaOkviraB(Integer.parseInt(velicinaMem) / Integer.parseInt(brojOkviraMem));
+        }
+        System.out.println();
+        System.out.println("~~~Dobrodosli!~~~");
+        System.out.println();
     }
 
 }

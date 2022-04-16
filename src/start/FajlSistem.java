@@ -11,6 +11,8 @@ public class FajlSistem {
     //Novi rasporedjivac procesa:
     public static RasporedjivacProcesa rp = new RasporedjivacProcesa();
 
+    public Asembler as = new Asembler();
+
     // Novi fs sa root folderom:
     public FajlSistem(boolean drugiPut) {
 
