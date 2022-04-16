@@ -16,7 +16,7 @@ public class Memorija {
 
     public int ucitaj(Stranica str) {
         int brojacPozicije = 0;
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < brojOkvira; i++) {
             if (okviri.get(i) == null){
                 okviri.set(i, str);
                 return brojacPozicije;  // Vraca poziciju stranice.
@@ -57,5 +57,9 @@ public class Memorija {
 
     public void setVelicinaOkviraB(int velicinaOkviraB) {
         this.velicinaOkviraB = velicinaOkviraB;
+    }
+
+    public int getVelicinaOkviraB() {
+        return velicinaOkviraB;
     }
 }

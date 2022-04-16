@@ -8,11 +8,11 @@ public class Proces {
     private int pid;
     private String naziv;
     private boolean ucitan;
-    private int vrijemeProcesaS;
+    private double vrijemeProcesaS;
     private int brojStranica;
     public ArrayList<Integer> tabelaStranica = new ArrayList<>();
 
-    public Proces(String naziv, int pid, int vrijemeProcesaS, int brojStranica){
+    public Proces(String naziv, int pid, double vrijemeProcesaS, int brojStranica){
         this.naziv = naziv;
         this.pid = pid;
         this.vrijemeProcesaS = vrijemeProcesaS;
@@ -53,14 +53,13 @@ public class Proces {
 
     public void rad() {
         try {
-            this.vrijemeProcesaS = vrijemeProcesaS - 1;
+            this.vrijemeProcesaS = vrijemeProcesaS - 0.1;
             if (vrijemeProcesaS <= 0){
                 RasporedjivacProcesa.sviProcesi.remove(this);
                 RasporedjivacProcesa.brojPokrenutihProcesa--;
                 RasporedjivacProcesa.mem.izbaci(tabelaStranica);
-
             }
-            sleep(1000);
+            sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

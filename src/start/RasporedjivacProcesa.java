@@ -10,8 +10,8 @@ public class RasporedjivacProcesa {
 
     public void noviProces(Fajl fajl){
         brojPokrenutihProcesa++;
-        int vrijemeProcesa = fajl.getVelicinaB() / 100;
-        int brojStranica = fajl.getVelicinaB() / 500;
+        double vrijemeProcesa = (double)fajl.getVelicinaB() / 100;
+        int brojStranica = fajl.getVelicinaB() / mem.getVelicinaOkviraB();
         Proces pr = new Proces(fajl.getNaziv(), brojPokrenutihProcesa, vrijemeProcesa, brojStranica);
         for (int i = 0; i < pr.getBrojStranica(); i++) {
             pr.tabelaStranica.add(i, 0);
