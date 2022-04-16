@@ -12,8 +12,9 @@ public class Main {
         // Pokrece Shell:
         Shell.start();
 
-        // Sacuva sve objekte u /podaci/save fajl:
-        CuvanjePodataka.sacuvaj();
+        // TODO: Popravi ovo:
+            // Sacuva sve objekte u /podaci/save fajl:
+            //CuvanjePodataka.sacuvaj();
 
     }
 

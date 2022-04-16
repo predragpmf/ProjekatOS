@@ -8,6 +8,8 @@ public class FajlSistem {
     public static int brojFajlova = 0;
     private Fajl lokacija;
     private String putanja = "";
+    //Novi rasporedjivac procesa:
+    public static RasporedjivacProcesa rp = new RasporedjivacProcesa();
 
     // Novi fs sa root folderom:
     public FajlSistem(boolean drugiPut) {

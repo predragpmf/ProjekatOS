@@ -7,6 +7,8 @@ public class Fajl implements Serializable {
 
     // Jedina razlika izmedju fajla i foldera:
     boolean folder;
+
+    private int velicinaB;
     private String naziv;
     private Fajl roditelj = null;
     private ArrayList<Fajl> djeca = new ArrayList<>();
@@ -15,19 +17,20 @@ public class Fajl implements Serializable {
         this.setNaziv(naziv);
     }
 
-    public void noviFajl(String nazivFajla, boolean isFolder) {
-        for (Fajl f : getDjeca()) {
-            if (f.getNaziv().equals(nazivFajla)) {
-                System.out.println("Fajl/Folder vec postoji!");
-                return;
+    public void noviFajl(String nazivFajla, boolean isFolder, int velicinaB) {
+            for (Fajl f : getDjeca()) {
+                if (f.getNaziv().equals(nazivFajla)) {
+                    System.out.println("Fajl/Folder vec postoji!");
+                    return;
+                }
             }
-        }
-        Fajl noviFajl = new Fajl(nazivFajla);
-        noviFajl.setFolder(isFolder);
-        noviFajl.setRoditelj(this);
-        this.dodajDijete(noviFajl);
-        FajlSistem.sviFajlovi.add(noviFajl);
-        FajlSistem.brojFajlova++;
+            Fajl noviFajl = new Fajl(nazivFajla);
+            noviFajl.velicinaB = velicinaB;
+            noviFajl.setFolder(isFolder);
+            noviFajl.setRoditelj(this);
+            this.dodajDijete(noviFajl);
+            FajlSistem.sviFajlovi.add(noviFajl);
+            FajlSistem.brojFajlova++;
     }
 
     public String getNaziv() {
@@ -68,4 +71,7 @@ public class Fajl implements Serializable {
         folder = vrijednost;
     }
 
+    public int getVelicinaB() {
+        return velicinaB;
+    }
 }

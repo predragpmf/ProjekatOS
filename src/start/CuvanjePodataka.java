@@ -1,3 +1,5 @@
+// TODO: Ako ne radi, obrisi sve:
+
 package start;
 
 import java.io.*;
