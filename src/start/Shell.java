@@ -39,10 +39,13 @@ public class Shell {
                 helpSb.append("mkdir <naziv_foldera> -- Novi folder;\n");
                 helpSb.append("mkfile <naziv_fajla> <velicina_fajla> -- Novi fajl;\n");
                 helpSb.append("ls -- Ispis fajlova i foldera;\n");
-                helpSb.append("cd <naziv_foldera> -- Promjeni trenutnu lokaciju;\n");
+                helpSb.append("cd <naziv_foldera>/<..> -- Promjeni trenutnu lokaciju;\n");
                 helpSb.append("rename <naziv_fajla/foldera> -- Promjeni naziv;\n");
                 helpSb.append("rm <naziv_fajla/foldera> -- Obrisi fajl/folder;\n");
                 helpSb.append("run <naziv_fajla> -- Pokreni fajl;\n");
+                helpSb.append("stop <naziv_fajla> -- Prekini proces;\n");
+                helpSb.append("block <naziv_fajla> -- Blokiraj proces;\n");
+                helpSb.append("unblock <naziv_fajla> -- Odblokiraj proces;\n");
                 helpSb.append("mem -- Prikazi pokrenute procese i upotrebu memorije;\n");
                 helpSb.append("save -- Sacuvaj fajlsistem na disk;\n");
                 System.out.println(helpSb);
@@ -81,8 +84,47 @@ public class Shell {
                 String nazivFajla = matcher.group(0);
                 for (Fajl f : fs.getLokacija().getDjeca()) {
                     if (f.getNaziv().equals(nazivFajla)) {
-                        //fs.rp.noviProces(f);
                         FajlSistem.rp.noviProces(f);
+                    }
+                }
+                continue;
+            }
+            if (naredba.matches("stop\s.*$")) {
+                Pattern pattern = Pattern.compile("(?<=^stop\s).*$");
+                Matcher matcher = pattern.matcher(naredba);
+                matcher.find();
+                String nazivFajla = matcher.group(0);
+                for (Proces p : RasporedjivacProcesa.sviProcesi) {
+                    if (p.getNaziv().equals(nazivFajla)) {
+                        RasporedjivacProcesa.sviProcesi.remove(p);
+                        RasporedjivacProcesa.mem.izbaci(p.getTabelaStranica());
+                    }
+                }
+                continue;
+            }
+            if (naredba.matches("block\s.*$")) {
+                Pattern pattern = Pattern.compile("(?<=^block\s).*$");
+                Matcher matcher = pattern.matcher(naredba);
+                matcher.find();
+                String nazivFajla = matcher.group(0);
+                for (Proces p : RasporedjivacProcesa.sviProcesi) {
+                    if (p.getNaziv().equals(nazivFajla)) {
+                        RasporedjivacProcesa.blokiraniProcesi.add(p);
+                        RasporedjivacProcesa.sviProcesi.remove(p);
+                    }
+                }
+                continue;
+            }
+            if (naredba.matches("unblock\s.*$")) {
+                Pattern pattern = Pattern.compile("(?<=^unblock\s).*$");
+                Matcher matcher = pattern.matcher(naredba);
+                matcher.find();
+                String nazivFajla = matcher.group(0);
+                for (Proces p : RasporedjivacProcesa.blokiraniProcesi) {
+                    if (p.getNaziv().equals(nazivFajla)) {
+                        RasporedjivacProcesa.sviProcesi.add(p);
+                        RasporedjivacProcesa.tred = new Tred();
+                        RasporedjivacProcesa.tred.start();
                     }
                 }
                 continue;
@@ -90,7 +132,6 @@ public class Shell {
             // Ispisi memoriju : mem
             if (naredba.matches("^mem$")) {
                 RasporedjivacProcesa.mem.ispisiMemoriju();
-                //fs.rp.mem.ispisiMemoriju();
                 System.out.println();
                 continue;
             }
@@ -179,25 +220,16 @@ public class Shell {
     }
 
     private static void ulaz() {
-        String velicinaMem;
-        String brojOkviraMem;
+        //String velicinaMem;
+        //String brojOkviraMem;
         StringBuilder naslovSb = new StringBuilder();
         naslovSb.append("-------------------\n");
         naslovSb.append("|---Projekat OS---|\n");
         naslovSb.append("-------------------\n");
         System.out.println(naslovSb);
-        System.out.print("Unesite velicinu memorije (podrazumjevano = 16000kB): ");
-        velicinaMem = scan.nextLine().strip();
-        System.out.print("Unesite broj okvira (podrazumjevano = 32): ");
-        brojOkviraMem = scan.nextLine().strip();
-        if (!velicinaMem.equals("") && !brojOkviraMem.equals("")) {
-            RasporedjivacProcesa.mem.setVelicinaMemorijeB(Integer.parseInt(velicinaMem));
-            RasporedjivacProcesa.mem.setBrojOkvira(Integer.parseInt(brojOkviraMem));
-            RasporedjivacProcesa.mem.setVelicinaOkviraB(Integer.parseInt(velicinaMem) / Integer.parseInt(brojOkviraMem));
-        }
-        System.out.println();
-        System.out.println("~~~Dobrodosli!~~~");
-        System.out.println();
+        /*
+        Ubaci inicijalizaciju memorije.
+        */
     }
 
 }

@@ -18,4 +18,7 @@ public class Stranica {
         return brojStranice;
     }
 
+    public Proces getProces() {
+        return proces;
+    }
 }

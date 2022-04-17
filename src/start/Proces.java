@@ -51,6 +51,13 @@ public class Proces {
         return naziv;
     }
 
+    public int getPid() {
+        return pid;
+    }
+    public ArrayList<Integer> getTabelaStranica() {
+        return tabelaStranica;
+    }
+
     public void rad() {
         try {
             this.vrijemeProcesaS = vrijemeProcesaS - 0.1;
@@ -58,6 +65,9 @@ public class Proces {
                 RasporedjivacProcesa.sviProcesi.remove(this);
                 RasporedjivacProcesa.brojPokrenutihProcesa--;
                 RasporedjivacProcesa.mem.izbaci(tabelaStranica);
+                if (!RasporedjivacProcesa.listaCekanja.isEmpty()) {
+                    FajlSistem.rp.ucitajProces(null, true);
+                }
             }
             sleep(100);
         } catch (InterruptedException e) {
