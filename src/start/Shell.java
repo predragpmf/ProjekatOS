@@ -1,6 +1,5 @@
 package start;
 
-import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,11 +8,11 @@ public class Shell {
 
     private static final Scanner scan = new Scanner(System.in);
     //Novi fs:
-    public static FajlSistem fs;
+    public static FajlSistem fs = new FajlSistem();
     // Unesena naredba:
     private static String naredba;
 
-    public static void start() throws IOException {
+    public static void start() {
 
         ulaz();
 
@@ -33,7 +32,7 @@ public class Shell {
                 System.out.println("Projekat iz Operativnih sistema/ORS3.");
                 continue;
             }
-            if (naredba.equals("help")){
+            if (naredba.equals("help")) {
                 StringBuilder helpSb = new StringBuilder();
                 helpSb.append("Naredbe:\n");
                 helpSb.append("mkdir <naziv_foldera> -- Novi folder;\n");
@@ -47,7 +46,7 @@ public class Shell {
                 helpSb.append("block <naziv_fajla> -- Blokiraj proces;\n");
                 helpSb.append("unblock <naziv_fajla> -- Odblokiraj proces;\n");
                 helpSb.append("mem -- Prikazi pokrenute procese i upotrebu memorije;\n");
-                helpSb.append("save -- Sacuvaj fajlsistem na disk;\n");
+                //helpSb.append("save -- Sacuvaj fajlsistem na disk;\n");
                 System.out.println(helpSb);
                 continue;
             }
@@ -61,13 +60,13 @@ public class Shell {
                 continue;
             }
             // Novi fajl : mkfile <naziv_fajla> <velicina_fajla>
-            if (naredba.matches("mkfile\s.*$")){
+            if (naredba.matches("mkfile\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^mkfile\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
                 String naziv = matcher.group(0);
                 String[] nazivIVelicina = naziv.split(" ");
-                if (nazivIVelicina.length == 1){
+                if (nazivIVelicina.length == 1) {
                     System.out.println("Greska u unosu!");
                     continue;
                 }
@@ -77,7 +76,7 @@ public class Shell {
                 continue;
             }
             // Pokreni fajl : run <naziv_fajla>
-            if (naredba.matches("run\s.*$")){
+            if (naredba.matches("run\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^run\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
@@ -136,16 +135,9 @@ public class Shell {
                 continue;
             }
 
-            // Mozda ne radi:
-            // Sacuvaj podatke i izadji: save
-            if (naredba.matches("^save$")) {
-                CuvanjePodataka.sacuvaj();
-                return;
-            }
-
             // Ispisi sve fajlove u trenutnom folderu: ls
             if (naredba.equals("ls")) {
-                if (fs.getLokacija().getNaziv().equals("out")){
+                if (fs.getLokacija().getNaziv().equals("out")) {
                     fs.as.ispis();
                 }
                 fs.getLokacija().ispisiDjecu();
@@ -202,8 +194,8 @@ public class Shell {
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
                 String naziv = matcher.group(0);
-                for(Fajl fajl : fs.getLokacija().getDjeca()){
-                    if(fajl.getNaziv().equals(naziv)){
+                for (Fajl fajl : fs.getLokacija().getDjeca()) {
+                    if (fajl.getNaziv().equals(naziv)) {
                         fajl.setRoditelj(null);
                     }
                 }
@@ -220,8 +212,6 @@ public class Shell {
     }
 
     private static void ulaz() {
-        //String velicinaMem;
-        //String brojOkviraMem;
         StringBuilder naslovSb = new StringBuilder();
         naslovSb.append("-------------------\n");
         naslovSb.append("|---Projekat OS---|\n");

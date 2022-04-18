@@ -6,25 +6,24 @@ public class FajlSistem {
 
     public static ArrayList<Fajl> sviFajlovi = new ArrayList<>();
     public static int brojFajlova = 0;
-    private Fajl lokacija;
-    private String putanja = "";
     //Novi rasporedjivac procesa:
     public static RasporedjivacProcesa rp = new RasporedjivacProcesa();
-
     public Asembler as = new Asembler();
+    private Fajl lokacija;
+    private String putanja = "";
 
     // Novi fs sa root folderom:
-    public FajlSistem(boolean drugiPut) {
+    public FajlSistem() {
 
         // Ako se prvi put ucitava fajl sistem, drugiPut je false:
-        if (!drugiPut) {
-            Fajl root = new Fajl("root");
-            root.setFolder(true);
-            this.lokacija = root;
-            sviFajlovi.add(root);
-            brojFajlova++;
-            this.putanja = "$ ";
-        }
+        //if (!drugiPut) {
+        Fajl root = new Fajl("root");
+        root.setFolder(true);
+        this.lokacija = root;
+        sviFajlovi.add(root);
+        brojFajlova++;
+        this.putanja = "$ ";
+        //}
     }
 
     public Fajl getLokacija() {

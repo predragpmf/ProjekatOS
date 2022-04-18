@@ -1,6 +1,6 @@
 package start;
 
-public class Tred extends Thread{
+public class Tred extends Thread {
 
     public void run() {
         for (int i = 0; i <= RasporedjivacProcesa.sviProcesi.size(); i++) {
@@ -10,7 +10,7 @@ public class Tred extends Thread{
             if (i == RasporedjivacProcesa.sviProcesi.size()) {
                 i = 0;
             }
-            if (!RasporedjivacProcesa.sviProcesi.get(i).getUcitan()){
+            if (!RasporedjivacProcesa.sviProcesi.get(i).getUcitan()) {
                 RasporedjivacProcesa.sviProcesi.get(i).setUcitan(true);
             }
             RasporedjivacProcesa.sviProcesi.get(i).rad();

@@ -7,7 +7,7 @@ public class Asembler {
 
     private File folder = new File("src/start/podaci");
 
-    public void ispis(){
+    public void ispis() {
 
         File[] listaFajlova = folder.listFiles();
         for (int i = 0; i < listaFajlova.length; i++) {

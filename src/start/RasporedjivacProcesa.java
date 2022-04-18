@@ -12,9 +12,9 @@ public class RasporedjivacProcesa {
     public static Stack<Proces> listaCekanja = new Stack<>();
     public static ArrayList<Proces> blokiraniProcesi = new ArrayList<>();
 
-    public void noviProces(Fajl fajl){
+    public void noviProces(Fajl fajl) {
         brojPokrenutihProcesa++;
-        double vrijemeProcesa = (double)fajl.getVelicinaB() / 100;
+        double vrijemeProcesa = (double) fajl.getVelicinaB() / 100;
         double broj = (double) fajl.getVelicinaB() / (double) mem.getVelicinaOkviraB();
         int brojStranica = (int) Math.ceil(broj);
         Proces pr = new Proces(fajl.getNaziv(), brojPokrenutihProcesa, vrijemeProcesa, brojStranica);
@@ -24,9 +24,9 @@ public class RasporedjivacProcesa {
         ucitajProces(pr, false);
     }
 
-    public void ucitajProces(Proces pr, boolean cekanje){
+    public void ucitajProces(Proces pr, boolean cekanje) {
         for (Proces p : sviProcesi) {
-            if (p.getNaziv().equals(pr.getNaziv())){
+            if (p.getNaziv().equals(pr.getNaziv())) {
                 System.out.println("Proces je vec aktivan!");
                 return;
             }
@@ -39,7 +39,7 @@ public class RasporedjivacProcesa {
             for (int i = 0; i < pr.getBrojStranica(); i++) {
                 Stranica str = new Stranica(pr, i);
                 pozicija = mem.ucitaj(str);
-                if (pozicija == -1){
+                if (pozicija == -1) {
                     // TODO
                 }
                 pr.tabelaStranica.add(i, pozicija);

@@ -18,19 +18,19 @@ public class Fajl implements Serializable {
     }
 
     public void noviFajl(String nazivFajla, boolean isFolder, int velicinaB) {
-            for (Fajl f : getDjeca()) {
-                if (f.getNaziv().equals(nazivFajla)) {
-                    System.out.println("Fajl/Folder vec postoji!");
-                    return;
-                }
+        for (Fajl f : getDjeca()) {
+            if (f.getNaziv().equals(nazivFajla)) {
+                System.out.println("Fajl/Folder vec postoji!");
+                return;
             }
-            Fajl noviFajl = new Fajl(nazivFajla);
-            noviFajl.velicinaB = velicinaB;
-            noviFajl.setFolder(isFolder);
-            noviFajl.setRoditelj(this);
-            this.dodajDijete(noviFajl);
-            FajlSistem.sviFajlovi.add(noviFajl);
-            FajlSistem.brojFajlova++;
+        }
+        Fajl noviFajl = new Fajl(nazivFajla);
+        noviFajl.velicinaB = velicinaB;
+        noviFajl.setFolder(isFolder);
+        noviFajl.setRoditelj(this);
+        this.dodajDijete(noviFajl);
+        FajlSistem.sviFajlovi.add(noviFajl);
+        FajlSistem.brojFajlova++;
     }
 
     public String getNaziv() {
@@ -59,7 +59,7 @@ public class Fajl implements Serializable {
 
     public void ispisiDjecu() {
         for (Fajl f : getDjeca()) {
-            if (f.getFolder()){
+            if (f.getFolder()) {
                 System.out.println("/" + f.getNaziv());
             } else {
                 System.out.println(f.getNaziv());
