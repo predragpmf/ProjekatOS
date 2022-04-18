@@ -6,27 +6,33 @@ public class Memorija {
     private int velicinaMemorijeB = 16000;
     private int velicinaOkviraB = 500;
     private int brojOkvira = 32;
-    private ArrayList<Stranica> okviri = new ArrayList<>(brojOkvira);
-    private int brojZauzetihOkvira = 0;
 
+    // Lista svih okvira memorije:
+    private ArrayList<Stranica> okviri = new ArrayList<>(brojOkvira);
+
+    // Inicijalizuje okvire memorije na "null":
     public Memorija() {
         for (int i = 0; i < brojOkvira; i++) {
             okviri.add(i, null);
         }
     }
 
+    // Ucitava novu stranicu u memoriju:
     public int ucitaj(Stranica str) {
         int brojacPozicije = 0;
         for (int i = 0; i < brojOkvira; i++) {
             if (okviri.get(i) == null) {
                 okviri.set(i, str);
-                return brojacPozicije;  // Vraca poziciju stranice.
+                // Vraca poziciju okvira u kojeg je smjestena stranica:
+                return brojacPozicije;
             }
             brojacPozicije++;
         }
-        return -1;  // Nema slobodnog mjesta.
+        // Nema slobodnog mjesta:
+        return -1;
     }
 
+    // Brise sve ucitane stranice procesa iz memorije:
     public void izbaci(ArrayList<Integer> tabelaStranica) {
         for (int ts : tabelaStranica) {
             okviri.set(ts, null);
@@ -44,13 +50,7 @@ public class Memorija {
         }
         System.out.println("Pregled memorije: ");
         System.out.println("\tUkupno : " + velicinaMemorijeB + "kB");
-        for (Stranica s : okviri) {
-            if (s != null) {
-                brojZauzetihOkvira++;
-            }
-        }
-        System.out.println("\tSlobodno : " + (velicinaMemorijeB - (brojZauzetihOkvira * velicinaOkviraB)) + "kB");
-        brojZauzetihOkvira = 0;
+        System.out.println("\tSlobodno : " + (getBrojSlobodnihOkvira() * velicinaOkviraB) + "kB");
         for (Stranica s : okviri) {
             if (s == null) {
                 System.out.print("| |");
@@ -62,26 +62,6 @@ public class Memorija {
 
     public int getVelicinaOkviraB() {
         return velicinaOkviraB;
-    }
-
-    public void setVelicinaOkviraB(int velicinaOkviraB) {
-        this.velicinaOkviraB = velicinaOkviraB;
-    }
-
-    public int getBrojOkvira() {
-        return brojOkvira;
-    }
-
-    public void setBrojOkvira(int brojOkvira) {
-        this.brojOkvira = brojOkvira;
-    }
-
-    public int getVelicinaMemorijeB() {
-        return velicinaMemorijeB;
-    }
-
-    public void setVelicinaMemorijeB(int velicinaMemorijeB) {
-        this.velicinaMemorijeB = velicinaMemorijeB;
     }
 
     public int getBrojSlobodnihOkvira() {

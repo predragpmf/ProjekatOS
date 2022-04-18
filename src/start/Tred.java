@@ -2,6 +2,7 @@ package start;
 
 public class Tred extends Thread {
 
+    // Kruzi kroz "sviProcesi":
     public void run() {
         for (int i = 0; i <= RasporedjivacProcesa.sviProcesi.size(); i++) {
             if (i == 0 && RasporedjivacProcesa.sviProcesi.size() == 0) {

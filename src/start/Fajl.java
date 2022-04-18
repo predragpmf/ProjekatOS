@@ -1,16 +1,16 @@
 package start;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Fajl implements Serializable {
+public class Fajl {
 
-    // Jedina razlika izmedju fajla i foldera:
+    // Ako je "true" onda je folder, u suprotnom je fajl:
     boolean folder;
-
     private int velicinaB;
     private String naziv;
     private Fajl roditelj = null;
+
+    // Lista djece foldera:
     private ArrayList<Fajl> djeca = new ArrayList<>();
 
     public Fajl(String naziv) {
@@ -25,7 +25,7 @@ public class Fajl implements Serializable {
             }
         }
         Fajl noviFajl = new Fajl(nazivFajla);
-        noviFajl.velicinaB = velicinaB;
+        noviFajl.setVelicinaB(velicinaB);
         noviFajl.setFolder(isFolder);
         noviFajl.setRoditelj(this);
         this.dodajDijete(noviFajl);
@@ -78,4 +78,10 @@ public class Fajl implements Serializable {
     public int getVelicinaB() {
         return velicinaB;
     }
+
+    public void setVelicinaB(int velicinaB) {
+        this.velicinaB = velicinaB;
+    }
+
+
 }

@@ -5,11 +5,21 @@ import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
 public class Proces {
+
+    // Lista svih stranica procesa:
     public ArrayList<Integer> tabelaStranica = new ArrayList<>();
+
+    // Id procesa:
     private int pid;
     private String naziv;
+
+    // Trenutno stanje procesa:
     private boolean ucitan;
+
+    // Preostalo vrijeme izvrsavanja procesa:
     private double vrijemeProcesaS;
+
+    // Ukupan broj stranica procesa:
     private int brojStranica;
 
     public Proces(String naziv, int pid, double vrijemeProcesaS, int brojStranica) {
@@ -28,38 +38,23 @@ public class Proces {
         this.ucitan = ucitan;
     }
 
-    public void setVrijemeProcesaS(int vrijemeProcesaS) {
-        this.vrijemeProcesaS = vrijemeProcesaS;
-    }
-
     public int getBrojStranica() {
         return brojStranica;
-    }
-
-    public void setBrojStranica(int brojStranica) {
-        this.brojStranica = brojStranica;
     }
 
     public String getNaziv() {
         return naziv;
     }
 
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
-    }
-
     public int getPid() {
         return pid;
-    }
-
-    public void setPid(int pid) {
-        this.pid = pid;
     }
 
     public ArrayList<Integer> getTabelaStranica() {
         return tabelaStranica;
     }
 
+    // Simulacija izvrsavanja procesa:
     public void rad() {
         try {
             this.vrijemeProcesaS = vrijemeProcesaS - 0.1;
@@ -75,6 +70,7 @@ public class Proces {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+
 }

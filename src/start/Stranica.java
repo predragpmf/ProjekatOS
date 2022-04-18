@@ -10,15 +10,9 @@ public class Stranica {
         this.brojStranice = br;
     }
 
-    public int getBrojStranice() {
-        return brojStranice;
-    }
-
-    public void setBrojStranice(int brojStranice) {
-        this.brojStranice = brojStranice;
-    }
-
     public Proces getProces() {
         return proces;
     }
+
+
 }

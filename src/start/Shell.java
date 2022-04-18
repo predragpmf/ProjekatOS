@@ -14,13 +14,16 @@ public class Shell {
 
     public static void start() {
 
+        // Ulazna poruka i inicijalizacija memorije:
         ulaz();
 
+        // Folder sa nazivom "out" je povezan sa folderom /src/podaci na disku:
         fs.getLokacija().noviFajl("out", true, 0);
 
         //Petlja za provjeru unosa:
         do {
             System.out.print(fs.getPutanja() + "> ");
+            // Procitaj ulaz:
             naredba = scan.nextLine();
             if (naredba.isEmpty()) {
                 continue;
@@ -46,10 +49,10 @@ public class Shell {
                 helpSb.append("block <naziv_fajla> -- Blokiraj proces;\n");
                 helpSb.append("unblock <naziv_fajla> -- Odblokiraj proces;\n");
                 helpSb.append("mem -- Prikazi pokrenute procese i upotrebu memorije;\n");
-                //helpSb.append("save -- Sacuvaj fajlsistem na disk;\n");
                 System.out.println(helpSb);
                 continue;
             }
+
             // Novi folder: mkdir <naziv_foldera>
             if (naredba.matches("^mkdir\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^mkdir\s).*$");
@@ -59,6 +62,7 @@ public class Shell {
                 fs.getLokacija().noviFajl(nazivFoldera, true, 0);
                 continue;
             }
+
             // Novi fajl : mkfile <naziv_fajla> <velicina_fajla>
             if (naredba.matches("mkfile\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^mkfile\s).*$");
@@ -75,7 +79,8 @@ public class Shell {
                 fs.getLokacija().noviFajl(nazivFajla, false, velicinaFajla);
                 continue;
             }
-            // Pokreni fajl : run <naziv_fajla>
+
+            // Napravi novi proces od fajla i pokreni ga : run <naziv_fajla>
             if (naredba.matches("run\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^run\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
@@ -88,6 +93,8 @@ public class Shell {
                 }
                 continue;
             }
+
+            // Zaustavi proces : stop <naziv_procesa>
             if (naredba.matches("stop\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^stop\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
@@ -101,6 +108,8 @@ public class Shell {
                 }
                 continue;
             }
+
+            // Blokiraj proces tokom izvrsavanja : block <naziv_procesa>
             if (naredba.matches("block\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^block\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
@@ -114,6 +123,8 @@ public class Shell {
                 }
                 continue;
             }
+
+            // Odblokiraj blokirani proces : unblock <naziv_procesa>
             if (naredba.matches("unblock\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^unblock\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
@@ -128,7 +139,8 @@ public class Shell {
                 }
                 continue;
             }
-            // Ispisi memoriju : mem
+
+            // Ispisi pokrenute procese i trenutno stanje memorije : mem
             if (naredba.matches("^mem$")) {
                 RasporedjivacProcesa.mem.ispisiMemoriju();
                 System.out.println();
@@ -143,6 +155,7 @@ public class Shell {
                 fs.getLokacija().ispisiDjecu();
                 continue;
             }
+
             // Otvori folder: cd <naziv_foldera>
             if (naredba.matches("^cd\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^cd\s).*$");
@@ -168,6 +181,7 @@ public class Shell {
                 }
                 continue;
             }
+
             // Promjeni naziv fajla/foldera: rename <stari_naziv> <novi_naziv>
             if (naredba.matches("^rename\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^rename\s).*$");
@@ -188,6 +202,7 @@ public class Shell {
                 }
                 continue;
             }
+
             // Obrisi folder/fajl rm <naziv_foldera>
             if (naredba.matches("^rm\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^rm\s).*$");
@@ -204,14 +219,18 @@ public class Shell {
                 FajlSistem.brojFajlova--;
                 continue;
             }
+
+            // U slucaju da naredba nije navedena iznad, ispisi:
             System.out.println("Naredba ne postoji!");
         } while (true);
 
+        // Glavnu while petlju prekida samo exit naredba.
         System.out.println("Zatvaranje...");
 
     }
 
     private static void ulaz() {
+
         StringBuilder naslovSb = new StringBuilder();
         naslovSb.append("-------------------\n");
         naslovSb.append("|---Projekat OS---|\n");
@@ -220,6 +239,7 @@ public class Shell {
         /*
         Ubaci inicijalizaciju memorije.
         */
+
     }
 
 }
