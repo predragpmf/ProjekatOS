@@ -8,7 +8,7 @@ public class Shell {
 
     private static final Scanner scan = new Scanner(System.in);
     //Novi fs:
-    public static FajlSistem fs = new FajlSistem();
+    private static FajlSistem fs = new FajlSistem();
     // Unesena naredba:
     private static String naredba;
 
@@ -86,6 +86,9 @@ public class Shell {
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
                 String nazivFajla = matcher.group(0);
+                if (fs.getLokacija().getNaziv().equals("out")) {
+                    fs.as.pokreni(nazivFajla);
+                }
                 for (Fajl f : fs.getLokacija().getDjeca()) {
                     if (f.getNaziv().equals(nazivFajla)) {
                         FajlSistem.rp.noviProces(f);
@@ -133,7 +136,7 @@ public class Shell {
                 for (Proces p : RasporedjivacProcesa.blokiraniProcesi) {
                     if (p.getNaziv().equals(nazivFajla)) {
                         RasporedjivacProcesa.sviProcesi.add(p);
-                        RasporedjivacProcesa.tred = new Tred();
+                        RasporedjivacProcesa.tred = new ProcessThread();
                         RasporedjivacProcesa.tred.start();
                     }
                 }

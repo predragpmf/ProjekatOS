@@ -14,7 +14,7 @@ public class RasporedjivacProcesa {
     public static Memorija mem = new Memorija();
 
     // Tred koji kruzi kroz listu "sviProcesi":
-    public static Tred tred = new Tred();
+    public static ProcessThread tred = new ProcessThread();
 
     // Ako nema dovoljno slobodne memorije proces ide na stek "listaCekanja":
     public static Stack<Proces> listaCekanja = new Stack<>();
@@ -62,7 +62,7 @@ public class RasporedjivacProcesa {
 
             // Ako tred radi nemoj pokretati novi, itd:
             if (!tred.isAlive()) {
-                tred = new Tred();
+                tred = new ProcessThread();
                 tred.start();
             }
 
