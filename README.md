@@ -1,1 +1,1 @@
-Projekat iz Operativnih sistema/ORS3
+Пројекат иѕ Оперативних система/ОРС3
