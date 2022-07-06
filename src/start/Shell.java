@@ -1,5 +1,9 @@
 package start;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -206,12 +210,20 @@ public class Shell {
                 continue;
             }
 
-            // Obrisi folder/fajl rm <naziv_foldera>
+            // Obrisi folder/fajl rm <naziv_foldera/naziv_fajla>
             if (naredba.matches("^rm\s.*$")) {
                 Pattern pattern = Pattern.compile("(?<=^rm\s).*$");
                 Matcher matcher = pattern.matcher(naredba);
                 matcher.find();
                 String naziv = matcher.group(0);
+                if (fs.getLokacija().getNaziv().equals("out")) {
+                    File fajl = new File("src/start/podaci/" + naziv);
+                    if (fajl.delete()) {
+                        System.out.println("Fajl obrisan!");
+                    } else {
+                        System.out.println("Greska pri brisanju fajla!");
+                    }
+                }
                 for (Fajl fajl : fs.getLokacija().getDjeca()) {
                     if (fajl.getNaziv().equals(naziv)) {
                         fajl.setRoditelj(null);
@@ -222,6 +234,65 @@ public class Shell {
                 FajlSistem.brojFajlova--;
                 continue;
             }
+            if (naredba.matches("^cat\s.*$")) {
+                if (fs.getLokacija().getNaziv().equals("out")) {
+                    Pattern pattern = Pattern.compile("(?<=^cat\s).*$");
+                    Matcher matcher = pattern.matcher(naredba);
+                    matcher.find();
+                    String rijeci = matcher.group(0);
+                    if (naredba.matches("^cat\s>.*$")) {
+                        String naziv = rijeci.split(" ")[1];
+                        try {
+                            File fajl = new File("src/start/podaci/" + naziv);
+                            if (fajl.createNewFile()) {
+                                System.out.println("Novi fajl napravljen!");
+                            } else {
+                                System.out.println("Fajl vec postoji!");
+                            }
+                            //FileWriter ispis = new FileWriter("src/start/podaci/" + naziv);
+                            BufferedWriter writer = new BufferedWriter(new FileWriter("src/start/podaci/" + naziv));
+                            String linija = scan.nextLine();
+                            while (true) {
+                                if (linija.equals("exit")) {
+                                    break;
+                                }
+                                System.out.println(linija);
+
+                                writer.append(linija);
+                                writer.newLine();
+
+                                if (scan.hasNextLine()) {
+                                    linija = scan.nextLine();
+                                } else {
+                                    break;
+                                }
+                            }
+                            writer.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            File fajl = new File("src/start/podaci/" + rijeci);
+                            if (!fajl.exists()) {
+                                System.out.println("Fajl ne postoji!");
+                                continue;
+                            }
+                            Scanner ispis = new Scanner(fajl);
+                            while (ispis.hasNextLine()) {
+                                String linija = ispis.nextLine();
+                                System.out.println(linija);
+                            }
+                            ispis.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("Pogresna lokacija!");
+                }
+                continue;
+            }
 
             // U slucaju da naredba nije navedena iznad, ispisi:
             System.out.println("Naredba ne postoji!");
@@ -229,6 +300,7 @@ public class Shell {
 
         // Glavnu while petlju prekida samo exit naredba.
         System.out.println("Zatvaranje...");
+        System.exit(0);
 
     }
 

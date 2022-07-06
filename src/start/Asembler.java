@@ -1,7 +1,10 @@
 package start;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Stack;
 
 
 public class Asembler {
@@ -12,9 +15,13 @@ public class Asembler {
     private final File folder = new File("src/start/podaci");
     private ArrayList<String> rijeci = new ArrayList<>();
     private Stack<Integer> stek = new Stack<>();
+    private boolean izlaz = false;
 
     public void pokreni(String nazivFajla) {
         ucitaj(nazivFajla);
+        if (izlaz) {
+            return;
+        }
         izvrsi();
 
     }
@@ -81,6 +88,13 @@ public class Asembler {
                     case "C" -> C++;
                     case "D" -> D++;
                 }
+            } else if (rijeci.get(i).equals("DEC")) {
+                switch (rijeci.get(i + 1)) {
+                    case "A" -> A--;
+                    case "B" -> B--;
+                    case "C" -> C--;
+                    case "D" -> D--;
+                }
             } else if (rijeci.get(i).equals("CMP")) {
                 String prva, druga;
                 prva = rijeci.get(i + 1).substring(0, rijeci.get(i + 1).length() - 1);
@@ -133,23 +147,112 @@ public class Asembler {
                 if (!flagZ) {
                     i = rijeci.indexOf(rijeci.get(i + 1) + ":");
                 }
+            } else if (rijeci.get(i).equals("ADD")) {
+                String prva, druga;
+                prva = rijeci.get(i + 1).substring(0, rijeci.get(i + 1).length() - 1);
+                druga = rijeci.get(i + 2);
+                if (isNumeric(druga)) {
+                    switch (prva) {
+                        case "A" -> A += Integer.parseInt(druga);
+                        case "B" -> B += Integer.parseInt(druga);
+                        case "C" -> C += Integer.parseInt(druga);
+                        case "D" -> D += Integer.parseInt(druga);
+                    }
+                } else {
+                    switch (prva) {
+                        case "A" -> {
+                            switch (druga) {
+                                case "B" -> A += B;
+                                case "C" -> A += C;
+                                case "D" -> A += D;
+                            }
+                        }
+                        case "B" -> {
+                            switch (druga) {
+                                case "A" -> B += A;
+                                case "C" -> B += C;
+                                case "D" -> B += D;
+                            }
+                        }
+                        case "C" -> {
+                            switch (druga) {
+                                case "A" -> C += A;
+                                case "B" -> C += B;
+                                case "D" -> C += D;
+                            }
+                        }
+                        case "D" -> {
+                            switch (druga) {
+                                case "A" -> D += A;
+                                case "B" -> D += B;
+                                case "C" -> D += C;
+                            }
+                        }
+                    }
+                }
+            } else if (rijeci.get(i).equals("SUB")) {
+                String prva, druga;
+                prva = rijeci.get(i + 1).substring(0, rijeci.get(i + 1).length() - 1);
+                druga = rijeci.get(i + 2);
+                if (isNumeric(druga)) {
+                    switch (prva) {
+                        case "A" -> A -= Integer.parseInt(druga);
+                        case "B" -> B -= Integer.parseInt(druga);
+                        case "C" -> C -= Integer.parseInt(druga);
+                        case "D" -> D -= Integer.parseInt(druga);
+                    }
+                } else {
+                    switch (prva) {
+                        case "A" -> {
+                            switch (druga) {
+                                case "B" -> A -= B;
+                                case "C" -> A -= C;
+                                case "D" -> A -= D;
+                            }
+                        }
+                        case "B" -> {
+                            switch (druga) {
+                                case "A" -> B -= A;
+                                case "C" -> B -= C;
+                                case "D" -> B -= D;
+                            }
+                        }
+                        case "C" -> {
+                            switch (druga) {
+                                case "A" -> C -= A;
+                                case "B" -> C -= B;
+                                case "D" -> C -= D;
+                            }
+                        }
+                        case "D" -> {
+                            switch (druga) {
+                                case "A" -> D -= A;
+                                case "B" -> D -= B;
+                                case "C" -> D -= C;
+                            }
+                        }
+                    }
+                }
+            } else {
+                continue;
             }
             stanje();
             Scanner scanner = new Scanner(System.in);
             scanner.nextLine();
 
         }
-        System.out.println("End.");
+        System.out.println("Kraj.");
     }
 
     private void stanje() {
         System.out.println("IP = " + IP + "; A = " + A + "; B = " + B + "; C = " + C + "; D = " + D + "; Zero = " + flagZ);
-        System.out.print("Stek = ");
+        System.out.print("Stek: [ ");
         if (!stek.isEmpty()) {
             for (Integer intg : stek) {
                 System.out.print(intg + "; ");
             }
         }
+        System.out.println("]");
     }
 
 
@@ -169,10 +272,26 @@ public class Asembler {
             Scanner input = new Scanner(file);
             while (input.hasNext()) {
                 String rijec = input.next();
+                int test = 0;
+                if (rijec.endsWith(",")) {
+                    String test2 = rijec.substring(0, rijec.length() - 1);
+                    if (isNumeric(test2)) {
+                        test = Integer.parseInt(test2);
+                    }
+                }
+                if (isNumeric(rijec)) {
+                    test = Integer.parseInt(rijec);
+                }
+                if (test < 0 || test > 255) {
+                    System.out.println("Broj mora biti izmedju 0 i 255!");
+                    izlaz = true;
+                    return;
+                }
+
                 rijeci.add(rijec);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }
