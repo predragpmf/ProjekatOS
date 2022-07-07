@@ -29,7 +29,7 @@ public class RasporedjivacProcesa {
         double broj = (double) fajl.getVelicinaB() / (double) mem.getVelicinaOkviraB();
         // Zaokruzuje broj stranica na prvi veci cijeli broj stranica:
         int brojStranica = (int) Math.ceil(broj);
-        Proces pr = new Proces(fajl.getNaziv(), brojPokrenutihProcesa, vrijemeProcesa, brojStranica);
+        Proces pr = new Proces(fajl.getNaziv(), vrijemeProcesa, brojStranica);
         for (int i = 0; i < pr.getBrojStranica(); i++) {
             pr.tabelaStranica.add(i, 0);
         }
@@ -65,7 +65,7 @@ public class RasporedjivacProcesa {
                 tred = new ProcessThread();
                 tred.start();
             }
-
+            System.out.println("Proces je pokrenut!");
             // Ako nema dovoljno mjesta u memoriji, proces ide na stek "listaCekanja"
         } else {
             listaCekanja.push(pr);

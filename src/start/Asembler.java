@@ -9,8 +9,8 @@ import java.util.Stack;
 
 public class Asembler {
 
-    private static int A = 0, B = 0, C = 0, D = 0, IP = 0, SP = 0;
-    private static boolean flagZ = false, flagC = false, flagF = false;
+    private static int A = 0, B = 0, C = 0, D = 0, IP = 0;
+    private static boolean flagZ = false;
 
     private final File folder = new File("src/start/podaci");
     private ArrayList<String> rijeci = new ArrayList<>();
@@ -28,7 +28,6 @@ public class Asembler {
 
     private void izvrsi() {
         for (int i = 0; i < rijeci.size(); i++) {
-            IP = i;
             if (rijeci.get(i).equals("JMP")) {
                 i = rijeci.indexOf(rijeci.get(i + 1) + ":");
             } else if (rijeci.get(i).equals("CALL")) {
@@ -236,11 +235,21 @@ public class Asembler {
             } else {
                 continue;
             }
+            IP++;
             stanje();
+
             Scanner scanner = new Scanner(System.in);
             scanner.nextLine();
 
         }
+        A = 0;
+        B = 0;
+        C = 0;
+        D = 0;
+        IP = 0;
+        flagZ = false;
+        stek.clear();
+        rijeci.clear();
         System.out.println("Kraj.");
     }
 

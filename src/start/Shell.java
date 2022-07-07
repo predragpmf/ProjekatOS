@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 
 public class Shell {
 
-    private static final Scanner scan = new Scanner(System.in);
+    private static Scanner scan = new Scanner(System.in);
     //Novi fs:
-    private static FajlSistem fs = new FajlSistem();
+    private static FajlSistem fs;
     // Unesena naredba:
     private static String naredba;
 
@@ -20,7 +20,7 @@ public class Shell {
 
         // Ulazna poruka i inicijalizacija memorije:
         ulaz();
-
+        fs = new FajlSistem();
         // Folder sa nazivom "out" je povezan sa folderom /src/podaci na disku:
         fs.getLokacija().noviFajl("out", true, 0);
 
@@ -53,6 +53,7 @@ public class Shell {
                 helpSb.append("block <naziv_fajla> -- Blokiraj proces;\n");
                 helpSb.append("unblock <naziv_fajla> -- Odblokiraj proces;\n");
                 helpSb.append("mem -- Prikazi pokrenute procese i upotrebu memorije;\n");
+                helpSb.append("cat >? <naziv_fajla> -- Kreira novi fajl i omogucava ispis podataka;\n");
                 System.out.println(helpSb);
                 continue;
             }
@@ -140,8 +141,8 @@ public class Shell {
                 for (Proces p : RasporedjivacProcesa.blokiraniProcesi) {
                     if (p.getNaziv().equals(nazivFajla)) {
                         RasporedjivacProcesa.sviProcesi.add(p);
-                        RasporedjivacProcesa.tred = new ProcessThread();
-                        RasporedjivacProcesa.tred.start();
+                        //RasporedjivacProcesa.tred = new ProcessThread();
+                        //RasporedjivacProcesa.tred.start();
                     }
                 }
                 continue;
@@ -256,7 +257,7 @@ public class Shell {
                                 if (linija.equals("exit")) {
                                     break;
                                 }
-                                System.out.println(linija);
+                                //System.out.println(linija);
 
                                 writer.append(linija);
                                 writer.newLine();
@@ -311,10 +312,37 @@ public class Shell {
         naslovSb.append("|---Projekat OS---|\n");
         naslovSb.append("-------------------\n");
         System.out.println(naslovSb);
-        /*
-        Ubaci inicijalizaciju memorije.
-        */
+        System.out.println();
 
+
+        System.out.println("Odaberi velicinu memorije (1 : 16kB, 2 : 32kB, 3 : 64kB)");
+        int velicinaMemorije = scan.nextInt();
+        if (velicinaMemorije == 1) {
+            Memorija.velicinaMemorijeB = 16000;
+        } else if (velicinaMemorije == 2) {
+            Memorija.velicinaMemorijeB = 32000;
+        } else if (velicinaMemorije == 3) {
+            Memorija.velicinaMemorijeB = 64000;
+        } else {
+            System.out.println("Greska pri unosu!");
+            System.exit(1);
+        }
+
+        System.out.println("Unesi velicinu okvira (1 : 250B, 2 : 500B, 3 : 1000B): ");
+        int velicinaOkvira = scan.nextInt();
+        if (velicinaOkvira == 1) {
+            Memorija.velicinaOkviraB = 250;
+        } else if (velicinaOkvira == 2) {
+            Memorija.velicinaOkviraB = 500;
+        } else if (velicinaOkvira == 3) {
+            Memorija.velicinaOkviraB = 1000;
+        } else {
+            System.out.println("Greska pri unosu!");
+            System.exit(1);
+        }
+        Memorija.brojOkvira = Memorija.velicinaMemorijeB / Memorija.velicinaOkviraB;
+        scan = new Scanner(System.in);
+        System.out.println();
     }
 
 }

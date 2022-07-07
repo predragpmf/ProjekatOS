@@ -1,19 +1,23 @@
 package start;
 
+import java.util.ListIterator;
+
 public class ProcessThread extends Thread {
 
     public void run() {
-        for (int i = 0; i <= RasporedjivacProcesa.sviProcesi.size(); i++) {
-            if (i == 0 && RasporedjivacProcesa.sviProcesi.size() == 0) {
-                return;
+        ListIterator<Proces> it = RasporedjivacProcesa.sviProcesi.listIterator();
+        Proces pr;
+        while (true) {
+            if (it.hasNext()) {
+                pr = it.next();
+            } else {
+                it = RasporedjivacProcesa.sviProcesi.listIterator();
+                continue;
             }
-            if (i == RasporedjivacProcesa.sviProcesi.size()) {
-                i = 0;
+            if (!pr.getUcitan()) {
+                pr.setUcitan(true);
             }
-            if (!RasporedjivacProcesa.sviProcesi.get(i).getUcitan()) {
-                RasporedjivacProcesa.sviProcesi.get(i).setUcitan(true);
-            }
-            RasporedjivacProcesa.sviProcesi.get(i).rad();
+            pr.rad();
         }
     }
 }

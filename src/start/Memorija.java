@@ -3,9 +3,9 @@ package start;
 import java.util.ArrayList;
 
 public class Memorija {
-    private int velicinaMemorijeB = 16000;
-    private int velicinaOkviraB = 500;
-    private int brojOkvira = 32;
+    public static int velicinaMemorijeB;
+    public static int velicinaOkviraB;
+    public static int brojOkvira;
 
     // Lista svih okvira memorije:
     private ArrayList<Stranica> okviri = new ArrayList<>(brojOkvira);
@@ -73,4 +73,6 @@ public class Memorija {
         }
         return broj;
     }
+
+
 }
