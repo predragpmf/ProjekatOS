@@ -19,10 +19,11 @@ void *thread() {
             num_running--;
             continue;
         }
+
+        // JMP:
         if (strncmp(inst, "00000001", 8) == 0) {
             // Go to next byte:
             current->IP += 1;
-
             // Count length of JMP label:
             int temp_ip = current->IP;
             inst = read_memory(temp_ip, current);
@@ -32,14 +33,11 @@ void *thread() {
                 temp_ip += 1;
                 inst = read_memory(temp_ip, current);
             }
-
             // Allocate memory for label:
             char *label = calloc((len * 8) + 9, sizeof(char));
             char *p_label = label;
-
             // Go back to start of label:
             inst = read_memory(current->IP, current);
-
             // Copy label to new str:
             for (int i = 0; i < len; i++) {
                 memcpy(p_label, inst, 8);
@@ -48,7 +46,6 @@ void *thread() {
                 inst = read_memory(current->IP, current);
             }
             memcpy(p_label, "00111010\0", 9);
-            
             // JMP to label:
             current->IP = jump_to(label, current);
             if (current->IP == -1) {
@@ -64,6 +61,58 @@ void *thread() {
             free(label);
             label = NULL;
             p_label = NULL;
+
+        // CALL:
+        } else if (strncmp(inst, "00000010", 8) == 0) {
+            current->IP += 1;
+            int temp_ip = current->IP;
+            inst = read_memory(temp_ip, current);
+            int len = 0;
+            while (strncmp(inst, "00000000", 8) != 0) {
+                len++;
+                temp_ip += 1;
+                inst = read_memory(temp_ip, current);
+            }
+            // Push return address to stack:
+            push_stack(current->cpu_stack, temp_ip);
+            char *label = calloc((len * 8) + 9, sizeof(char));
+            char *p_label = label;
+            inst = read_memory(current->IP, current);
+            for (int i = 0; i < len; i++) {
+                memcpy(p_label, inst, 8);
+                p_label += 8;
+                current->IP += 1;
+                inst = read_memory(current->IP, current);
+            }
+            memcpy(p_label, "00111010\0", 9);
+            current->IP = jump_to(label, current);
+            if (current->IP == -1) {
+                printf("Invalid JMP label!");
+                free(label);
+                label = NULL;
+                p_label = NULL;
+                inst = NULL;
+                free_process(current);
+                num_running--;
+                continue;
+            }
+            free(label);
+            label = NULL;
+            p_label = NULL;
+
+        // RET:
+        } else if (strncmp(inst, "00000011", 8) == 0) {
+            int stack_ip = pop_stack(current->cpu_stack);
+            if (stack_ip == -1) {
+                printf("Invalid stack value on return!\n");
+                free_process(current);
+                inst = NULL;
+                num_running--;
+                continue;
+            }
+            current->IP = stack_ip;
+
+        // HLT:
         } else if (strncmp(inst, "00000100", 8) == 0) {
             printf("Process id: %d finished!\n", current->id);
             free_process(current);
@@ -128,6 +177,7 @@ void free_process(process *current) {
         current->pages[i]->size = 0;
         current->pages[i]->free = 1;
     }
+    free_stack(current->cpu_stack);
     free(current->pages);
     current->pages = NULL;
     free(current);

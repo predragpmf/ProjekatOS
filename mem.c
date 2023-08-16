@@ -72,14 +72,11 @@ page **load_data(page *head, char *data, int *ret_num_pages) {
 
 page *write_page(char *data, page *head) {
     page *temp = head;
-    //char *address = NULL;
     for (int i = 0; i < NUM_PAGES; i++) {
         if (temp->free) {
             strcpy(temp->data, data);
             temp->size = strlen(data);
-            //address = temp->data;
             temp->free = 0;
-            //index = temp->id;
             break;
         } else {
             temp = temp->next;
