@@ -2,7 +2,7 @@
 #define FILESYSTEM_H
 
 typedef struct node{
-    char name[128];
+    char name[256];
     int size;
     int num_blocks;
     int *blocks;

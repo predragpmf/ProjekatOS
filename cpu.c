@@ -12,8 +12,13 @@ void *thread() {
     while (1) {
         process *current = pop_process();
         current->running = 1;
-        
         char *inst = read_memory(current->IP, current);
+        if (inst == NULL) {
+            printf("Process id: %d finished!\n", current->id);
+            free_process(current);
+            num_running--;
+            continue;
+        }
         if (strncmp(inst, "00000001", 8) == 0) {
             // Go to next byte:
             current->IP += 1;
@@ -43,7 +48,6 @@ void *thread() {
                 inst = read_memory(current->IP, current);
             }
             memcpy(p_label, "00111010\0", 9);
-            //*p_label = '\0';
             
             // JMP to label:
             current->IP = jump_to(label, current);
@@ -52,6 +56,7 @@ void *thread() {
                 free(label);
                 label = NULL;
                 p_label = NULL;
+                inst = NULL;
                 free_process(current);
                 num_running--;
                 continue;
@@ -60,8 +65,9 @@ void *thread() {
             label = NULL;
             p_label = NULL;
         } else if (strncmp(inst, "00000100", 8) == 0) {
-            printf("Process %d finished!\n", current->id);
+            printf("Process id: %d finished!\n", current->id);
             free_process(current);
+            inst = NULL;
             num_running--;
             continue;
         } else {
@@ -79,11 +85,13 @@ char *read_memory(int IP, process *current) {
     int char_pos = IP * 8;
     // Page index of the current instruction to be executed:
     int current_page = char_pos / PAGE_SIZE;
-    // Position relative to the current page:
-    int page_pos = char_pos - (current_page * PAGE_SIZE);
-    // Go to position:
-    char *p = current->pages[current_page]->data + page_pos;
-    
+    char *p = NULL;
+    if (current_page <= (current->num_pages - 1)) {
+        // Position relative to the current page:
+        int page_pos = char_pos - (current_page * PAGE_SIZE);
+        // Go to position:
+        p = current->pages[current_page]->data + page_pos;        
+    }
     return p;
 }
 

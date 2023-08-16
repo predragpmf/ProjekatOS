@@ -20,10 +20,11 @@ int main() {
     } else {
         printf("CPU error.\n");
     }
+    char *path = calloc(4096, sizeof(char));
     while (1) {
 
         char line[4096];
-        printf("> ");
+        printf("%s> ", path);
         fgets(line, sizeof(line), stdin);
         if (line[strlen(line) - 1] != '\n') {
             printf("Input is too long!\n");
@@ -35,7 +36,6 @@ int main() {
             continue;
         }
 
-        // Remove '\n' from end of line:
         line[strlen(line) - 1] = '\0';
 
         if (strcmp(line, "exit") == 0) {
@@ -46,7 +46,7 @@ int main() {
             char *dir_name = line + 6;
             node *new_dir = create_node(dir_name, 0, NULL, 1);
             if (new_dir == NULL) {
-                printf("Error creating directory\n");
+                printf("Error creating directory!\n");
             } else {
                 add_child(location, new_dir);
             }
@@ -57,7 +57,7 @@ int main() {
             char *file_name = line + 7;
             node *new_file = create_node(file_name, 0, NULL, 0);
             if (new_file == NULL) {
-                printf("Error creating file\n");
+                printf("Error creating file!\n");
             } else {
                 add_child(location, new_file);
             }
@@ -82,7 +82,7 @@ int main() {
                         free(data);
                         data = NULL;
                         while ((getchar()) != '\n');
-                        continue;
+                        break;
                     }
                     data[strlen(data) - 1] = '\0';
                     int size = strlen(data);
@@ -93,7 +93,7 @@ int main() {
                         printf("Error allocating memory!\n");
                         free(data);
                         data = NULL;
-                        continue;
+                        break;
                     }
                     if (current->blocks != NULL) {
                         if (clear_data(current->blocks, current->num_blocks) == -1) {
@@ -114,7 +114,7 @@ int main() {
                         blocks = NULL;
                         free(data);
                         data = NULL;
-                        continue;
+                        break;
                     }
                     for (int i = 0; i < num_blocks; i++) {
                         blocks[i] = locations[i];
@@ -145,10 +145,14 @@ int main() {
                     if (current->is_directory == 1) {
                         printf("Can't print directory!\n");
                     } else {
+                        if (current->blocks == NULL) {
+                            printf("File is empty!\n");
+                            break;
+                        }
                         char *data = read_data(current->blocks, current->num_blocks, current->size);
                         if (data == NULL) {
                             printf("Error reading data!\n");
-                            continue;
+                            break;
                         }
                         printf("%s\n", data);
                         free(data);
@@ -202,6 +206,10 @@ int main() {
                 if (location->parent != NULL) {
                     location = location->parent;
                 }
+                char *loc = strrchr(path, '/');
+                if (loc != NULL) {
+                    *loc = '\0';
+                }
                 continue;
             }
             node *current = location->first_child;
@@ -211,6 +219,9 @@ int main() {
                         printf("Not a directory!\n");
                         break;
                     }
+                    char new_path[4096];
+                    sprintf(new_path, "%s/%s", path, current->name);
+                    strcpy(path, new_path);
                     location = current;
                     break;
                 }
@@ -237,7 +248,7 @@ int main() {
 
         if (strncmp(line, "readblock ", 10) == 0) {
             int num;
-            if (sscanf(line + 11, "%d", &num) == 1) {
+            if (sscanf(line + 10, "%d", &num) == 1) {
                 read_block(num);
             } else {
                 printf("Invalid\n");
@@ -268,23 +279,26 @@ int main() {
                     if (current->is_directory == 1) {
                         printf("Can't assemble a directory!\n");
                     } else {
+                        if (current->blocks == NULL) {
+                            printf("File is empty!\n");
+                            break;
+                        }
                         char *data = read_data(current->blocks, current->num_blocks, current->size);
                         if (data == NULL) {
                             printf("Error reading data!\n");
-                            continue;
+                            break;
                         }
                         char *binary = assemble(data, current->size);
                         printf("Result: %s\n", binary);
                         free(data);
                         data = NULL;
 
-                        // If str in "char line[]" is longer than 4092, strcat will segfault:
                         node *new_file = create_node(strcat(file_name, ".exe"), 0, NULL, 0);
                         if (new_file == NULL) {
                             printf("Error creating file\n");
                             free(binary);
                             binary = NULL;
-                            continue;
+                            break;
                         } else {
                             add_child(location, new_file);
                         }
@@ -296,7 +310,7 @@ int main() {
                             printf("Error allocating memory!\n");
                             free(binary);
                             binary = NULL;
-                            continue;
+                            break;
                         }
                         int *locations = write_data(binary);
                         if (locations == NULL) {
@@ -305,7 +319,7 @@ int main() {
                             binary = NULL;
                             free(blocks);
                             blocks = NULL;
-                            continue;
+                            break;
                         }
                         for (int i = 0; i < num_blocks; i++) {
                             blocks[i] = locations[i];
@@ -340,6 +354,10 @@ int main() {
                     if (current->is_directory == 1) {
                         printf("Can't run a directory!\n");
                     } else {
+                        if (current->blocks == NULL) {
+                            printf("File is empty!\n");
+                            break;
+                        }
                         char *data = read_data(current->blocks, current->num_blocks, current->size);
                         int num_pages = 0;
                         page **pages = load_data(mem_head, data, &num_pages);

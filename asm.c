@@ -6,7 +6,6 @@
 
 char *assemble(char *data, int size) {
     char *word = strtok(data, " ");
-    // After every string should be 00000000:
     char *binary = calloc((size * 16) + 1, sizeof(char));
     char *p = binary;
     int count = 0;
@@ -16,7 +15,6 @@ char *assemble(char *data, int size) {
             memcpy(p, "00000001", 8);
             p += 8;
             word = strtok(NULL, " ");
-
             continue;
         }
         if (strcmp(word, "CALL") == 0) {

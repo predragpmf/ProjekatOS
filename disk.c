@@ -65,9 +65,7 @@ int *write_data(char *data) {
             len = block;
         }
         strncpy(subarray, p, len);
-        //printf("%d. Prije nule: |%s|\n", i, p);
         subarray[len] = '\0';
-        //printf("%d. Poslije nule: |%s|\n", i, p);
         p += len;
 
         locations[i] = write_block(subarray, fp);
@@ -106,7 +104,6 @@ int write_block(char *block, FILE *fp) {
             char one_byte = '1';
             fseek(fp, i * BLOCK_SIZE, SEEK_SET);
             fwrite(&one_byte, sizeof(char), 1, fp);
-            //printf("Duzina bloka: %d\n", (int)strlen(block));
             fwrite(block, sizeof(char), strlen(block), fp);
             return i;
         }
@@ -191,13 +188,15 @@ void read_block(int n) {
         printf("Error opening disk file\n");
         return;
     }
-    char *data = malloc(8 * sizeof(char));
-    fseek(fp, n * BLOCK_SIZE, SEEK_SET);
-    fread(data, sizeof(char), BLOCK_SIZE, fp);
+    char *data = calloc(BLOCK_SIZE, sizeof(char));
+    fseek(fp, (n * BLOCK_SIZE) + 1, SEEK_SET);
+    fread(data, sizeof(char), BLOCK_SIZE - 1, fp);
+    data[BLOCK_SIZE - 1] = '\0';
     printf("Block %d: |%s|\n", n, data);
     free(data);
     data = NULL;
     fclose(fp);
+    fp = NULL;
 }
 
 int freespace(FILE *fp) {
