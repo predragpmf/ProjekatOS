@@ -8,7 +8,7 @@
 
 void create_disk() {
     if (access("disk", F_OK) == 0) {
-        printf("Disk found!\n");
+        //printf("Disk found!\n");
     } else {
         FILE *fp = fopen("disk", "wb");
         if (fp == NULL) {

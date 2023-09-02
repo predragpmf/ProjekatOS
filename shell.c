@@ -16,7 +16,7 @@ int main() {
     page *mem_head = init_mem();
     node *location = root;
     if (start_cpu() == 0) {
-        printf("CPU started.\n");
+        //printf("CPU started.\n");
     } else {
         printf("CPU error.\n");
     }
