@@ -144,7 +144,7 @@ char *read_memory(int IP, process *current) {
     return p;
 }
 
-int jump_to(char* str, process *current) {
+int jump_to(char *str, process *current) {
     char *data = calloc((current->size * 8) + 1, sizeof(char));
     char *p_data = data;
     for (int i = 0; i < current->num_pages; i++) {
